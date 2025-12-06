@@ -60,7 +60,7 @@ All VPN traffic runs on lightweight instances - no GPU needed.
 | `t3.small` | 2 | 2GB | ~$0.02 | Family use, 3-5 devices |
 | `t3.medium` | 2 | 4GB | ~$0.04 | Heavy usage, 5+ devices |
 
-**Default Configuration:** `t3.micro` is perfect for most personal VPN needs and costs approximately **$7.20/month** if left running 24/7, or just **$0.24/day** for occasional use.
+**Default Configuration:** `t3.micro` is perfect for most personal VPN needs and costs approximately **$7.20/month** if left running 24/7.
 
 ## 🌍 Region Selection
 
@@ -114,7 +114,7 @@ Use the provided connection script for quick, terminal-based access:
 
 ```bash
 # Connect to VPN (runs in foreground)
-./connect-vpn.sh
+sudo ./connect-vpn.sh
 
 # Press Ctrl+C to disconnect
 ```

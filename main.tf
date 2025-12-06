@@ -173,7 +173,7 @@ resource "null_resource" "generate_wg_keys" {
                -o StrictHostKeyChecking=no \
                -o ConnectTimeout=5 \
                ubuntu@${aws_instance.vpn_instance.public_ip} \
-               "test -f /etc/wireguard/server_public.key" 2>/dev/null; then
+               "sudo test -f /etc/wireguard/server_public.key" 2>/dev/null; then
           break
         fi
         echo "Waiting for WireGuard server setup... ($attempt/$max_attempts)"
@@ -181,11 +181,11 @@ resource "null_resource" "generate_wg_keys" {
         attempt=$((attempt + 1))
       done
       
-      # Fetch server public key
+      # Fetch server public key (use sudo)
       SERVER_PUBLIC_KEY=$(ssh -i ${local_file.private_key.filename} \
                               -o StrictHostKeyChecking=no \
                               ubuntu@${aws_instance.vpn_instance.public_ip} \
-                              "cat /etc/wireguard/server_public.key")
+                              "sudo cat /etc/wireguard/server_public.key")
       
       # Generate client configurations
       for i in $(seq 1 ${var.max_clients}); do

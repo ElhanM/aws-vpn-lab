@@ -34,17 +34,20 @@ if [ ! -f "$CONFIG_FILE" ]; then
     exit 1
 fi
 
+# Extract interface name from config file (basename without .conf extension)
+INTERFACE_NAME=$(basename "$CONFIG_FILE" .conf)
+
 # Check if already connected
-if wg show | grep -q "interface: wg0"; then
+if wg show "$INTERFACE_NAME" &>/dev/null; then
     echo -e "${YELLOW}VPN is already connected!${NC}"
     echo -e "${CYAN}Current status:${NC}"
-    wg show
+    wg show "$INTERFACE_NAME"
     echo ""
     read -p "Disconnect and reconnect? (y/N): " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo -e "${YELLOW}Disconnecting...${NC}"
-        wg-quick down wg0 2>/dev/null || true
+        wg-quick down "$CONFIG_FILE" 2>/dev/null || true
         sleep 1
     else
         exit 0
@@ -55,6 +58,7 @@ echo -e "${BLUE}╔════════════════════�
 echo -e "${BLUE}║            AWS VPN Lab - Connecting to VPN 🔐              ║${NC}"
 echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
 echo -e "${CYAN}Using configuration: $CONFIG_FILE${NC}"
+echo -e "${CYAN}Interface name: $INTERFACE_NAME${NC}"
 echo ""
 
 # Connect to VPN
@@ -69,7 +73,7 @@ echo ""
 echo -e "${GREEN}✓ VPN Connected Successfully!${NC}"
 echo ""
 echo -e "${CYAN}Connection Details:${NC}"
-wg show
+wg show "$INTERFACE_NAME"
 
 # Get and display public IP
 echo ""
@@ -83,11 +87,11 @@ echo -e "${YELLOW}VPN is now active!${NC}"
 echo -e "${YELLOW}All your internet traffic is now encrypted and routed through AWS.${NC}"
 echo ""
 echo -e "${CYAN}To disconnect, press Ctrl+C or run:${NC}"
-echo -e "  sudo wg-quick down wg0"
+echo -e "  sudo wg-quick down $CONFIG_FILE"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 # Trap Ctrl+C to gracefully disconnect
-trap 'echo ""; echo -e "${YELLOW}Disconnecting VPN...${NC}"; wg-quick down wg0; echo -e "${GREEN}✓ VPN Disconnected${NC}"; exit 0' INT TERM
+trap "echo ''; echo -e '${YELLOW}Disconnecting VPN...${NC}'; wg-quick down '$CONFIG_FILE'; echo -e '${GREEN}✓ VPN Disconnected${NC}'; exit 0" INT TERM
 
 # Keep script running
 echo -e "${CYAN}Press Ctrl+C to disconnect...${NC}"
