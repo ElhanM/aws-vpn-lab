@@ -131,7 +131,7 @@ Transfer the configuration file to your Android device:
 
 1. Install WireGuard from the Play Store
 2. Transfer `vpn-configs/client2.conf` to your phone (via email, cloud, USB)
-3. In the WireGuard app: **+** → **Import from file or archive**
+3. In the WireGuard app: **+** -> **Import from file or archive**
 4. Select the config file
 5. Toggle the VPN on
 
