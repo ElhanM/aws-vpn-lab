@@ -143,19 +143,7 @@ Transfer the configuration file to your Android device:
 - `vpn-configs/client3.conf` - Tablet
 - `vpn-configs/client4.conf` through `client10.conf` - Additional devices
 
-### 5. Verify Connection
-
-Once connected, verify your VPN is working:
-
-```bash
-# Check your public IP (should show AWS server IP)
-curl ifconfig.me
-
-# Check WireGuard status
-sudo wg show
-```
-
-### 6. Tear Down (Stop Billing)
+### 5. Tear Down (Stop Billing)
 
 **Crucial:** When finished, destroy resources to stop costs. This deletes the server and all configurations.
 
@@ -181,8 +169,6 @@ Type `yes` to confirm.
   * **Public Wi-Fi protection:** Secure your connection at coffee shops, airports
   * **Privacy:** Hide your browsing from ISP
   * **Geo-spoofing:** Access region-locked content by choosing different AWS regions
-  * **Remote work:** Secure connection to cloud resources
-  * **Travel:** Maintain privacy on foreign networks
   * **Family sharing:** Each family member gets their own config (up to 10 devices)
 
 ## 🔒 Security Best Practices
@@ -190,5 +176,3 @@ Type `yes` to confirm.
 - **Never share config files** - Each device should have its own
 - **Keep `vpn-configs/` directory private** - Treat like SSH keys
 - **Use `terraform destroy`** when not needed - Don't leave VPN running unnecessarily
-- **Monitor AWS billing** - Set up cost alerts in AWS Console
-- **Backup configs before destroying** - If you want to keep them for reference (though they won't work with new deployments)
