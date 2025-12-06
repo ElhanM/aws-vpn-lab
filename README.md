@@ -54,13 +54,13 @@ EOF
 
 All VPN traffic runs on lightweight instances - no GPU needed.
 
-| Instance Type | vCPUs | RAM | Cost/Hour | Best For |
-|---------------|-------|-----|-----------|----------|
-| `t3.micro` (Default) | 2 | 1GB | ~$0.01 | Personal use, 1-2 devices |
-| `t3.small` | 2 | 2GB | ~$0.02 | Family use, 3-5 devices |
-| `t3.medium` | 2 | 4GB | ~$0.04 | Heavy usage, 5+ devices |
+| Instance Type | vCPUs | RAM | Cost/Hour | Est. Cost/Month (24/7) | Best For |
+|---------------|-------|-----|-----------|------------------------|----------|
+| `t3.micro` (Default) | 2 | 1GB | ~$0.01 | **~$7.20** | Personal use, 1-2 devices |
+| `t3.small` | 2 | 2GB | ~$0.02 | **~$14.40** | Family use, 3-5 devices |
+| `t3.medium` | 2 | 4GB | ~$0.04 | **~$28.80** | Heavy usage, 6-10 devices |
 
-**Default Configuration:** `t3.micro` is perfect for most personal VPN needs and costs approximately **$7.20/month** if left running 24/7.
+**Default Configuration:** `t3.micro` is perfect for most personal VPN needs. Costs are estimates based on ~730 hours/month.
 
 ## 🌍 Region Selection
 
