@@ -66,14 +66,18 @@ All VPN traffic runs on lightweight instances - no GPU needed.
 
 Choose a region close to you for best performance, or far from you for geo-spoofing. The default is **N. Virginia (us-east-1)**.
 
-## 🔧 VPN Configuration
+## 📦 Prerequisites (Debian/Ubuntu)
 
-The VPN server supports:
+Before deploying, ensure you have WireGuard installed on your local machine:
 
-  * **Multiple Devices:** Connect phones, laptops, tablets simultaneously.
-  * **WireGuard Protocol:** Fast, secure, battery-efficient.
-  * **Split Tunneling:** Optional - route only specific traffic through VPN.
-  * **Kill Switch:** Automatically blocks traffic if VPN disconnects.
+```bash
+# Install WireGuard
+sudo apt update
+sudo apt install wireguard wireguard-tools
+
+# Verify installation
+wg --version
+```
 
 ## 🚀 Usage
 
@@ -100,55 +104,91 @@ terraform apply -var="instance_type=t3.small"
 
 Type `yes` when prompted.
 
-### 3. Get Your VPN Configuration
+After deployment, Terraform will generate configuration files for all your devices in the `./vpn-configs/` directory.
 
-After deployment completes, Terraform will output:
+### 3. Connect to VPN (Desktop/Laptop - Linux Only)
 
-  * **Server IP address**
-  * **WireGuard configuration file** (automatically generated)
-  * **QR code** for mobile devices
+The VPN server is configured to support **up to 10 devices simultaneously**. Each device gets its own unique configuration file for security.
 
-### 4. Connect Your Devices
+Use the provided connection script for quick, terminal-based access:
 
-**For Desktop (Windows/Mac/Linux):**
+```bash
+# Connect to VPN (runs in foreground)
+./connect-vpn.sh
 
-1.  Install WireGuard: [wireguard.com/install](https://www.wireguard.com/install/)
-2.  Import the generated configuration file
-3.  Activate the tunnel
+# Press Ctrl+C to disconnect
+```
 
-**For Mobile (iOS/Android):**
+**What the script does:**
+- Automatically loads the correct WireGuard configuration
+- Establishes the VPN tunnel
+- Shows connection status
+- Disconnects cleanly when you press Ctrl+C
 
-1.  Install WireGuard app from App Store/Play Store
-2.  Scan the QR code displayed in terminal
-3.  Activate the tunnel
+### 4. Connect Mobile Devices (Android)
+
+Transfer the configuration file to your Android device:
+
+1. Install WireGuard from the Play Store
+2. Transfer `vpn-configs/client2.conf` to your phone (via email, cloud, USB)
+3. In the WireGuard app: **+** → **Import from file or archive**
+4. Select the config file
+5. Toggle the VPN on
+
+**Security Note:** Do NOT share config files between devices. Each device should use its own unique configuration (client1, client2, client3, etc.).
+
+**Available configs after deployment:**
+- `vpn-configs/client1.conf` - Desktop/laptop primary
+- `vpn-configs/client2.conf` - Phone
+- `vpn-configs/client3.conf` - Tablet
+- `vpn-configs/client4.conf` through `client10.conf` - Additional devices
 
 ### 5. Verify Connection
 
 Once connected, verify your VPN is working:
 
 ```bash
-# Check your public IP
+# Check your public IP (should show AWS server IP)
 curl ifconfig.me
-```
 
-Your IP should now show the AWS server's IP address.
+# Check WireGuard status
+sudo wg show
+```
 
 ### 6. Tear Down (Stop Billing)
 
 **Crucial:** When finished, destroy resources to stop costs. This deletes the server and all configurations.
 
+**Important:** Use the same parameters you used with `terraform apply`:
+
 ```bash
+# If you deployed with default settings
 terraform destroy
+
+# If you deployed with custom region or instance type
+terraform destroy -var="aws_region=eu-west-2" -var="instance_type=t3.small"
 ```
 
 Type `yes` to confirm.
 
-**⚠️ Important:** You'll need to reconfigure your devices if you redeploy. Save your config files if you plan to use the same setup again.
+**⚠️ Warning:** 
+- This deletes all server data and configurations
+- Your local config files in `vpn-configs/` remain, but will NOT work with a new deployment
+- If you redeploy, new config files will be generated - you'll need to reconfigure all devices
 
 ## 🌐 Use Cases
 
   * **Public Wi-Fi protection:** Secure your connection at coffee shops, airports
   * **Privacy:** Hide your browsing from ISP
-  * **Geo-spoofing:** Access region-locked content
+  * **Geo-spoofing:** Access region-locked content by choosing different AWS regions
   * **Remote work:** Secure connection to cloud resources
   * **Travel:** Maintain privacy on foreign networks
+  * **Family sharing:** Each family member gets their own config (up to 10 devices)
+
+## 🔒 Security Best Practices
+
+- **Never share config files** - Each device should have its own
+- **Keep `vpn-configs/` directory private** - Treat like SSH keys
+- **Use `terraform destroy`** when not needed - Don't leave VPN running unnecessarily
+- **Monitor AWS billing** - Set up cost alerts in AWS Console
+- **Backup configs before destroying** - If you want to keep them for reference (though they won't work with new deployments)
