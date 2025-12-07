@@ -56,11 +56,19 @@ All VPN traffic runs on lightweight instances - no GPU needed.
 
 | Instance Type | vCPUs | RAM | Cost/Hour | Est. Cost/Month (24/7) | Best For |
 |---------------|-------|-----|-----------|------------------------|----------|
-| `t3.micro` (Default) | 2 | 1GB | ~$0.01 | **~$7.20** | Personal use, 1-2 devices |
-| `t3.small` | 2 | 2GB | ~$0.02 | **~$14.40** | Family use, 3-5 devices |
-| `t3.medium` | 2 | 4GB | ~$0.04 | **~$28.80** | Heavy usage, 6-10 devices |
+| `t3.micro` (Default) | 2 | 1GB | \~$0.01 | ~$7.20 | Personal use, 1-2 devices |
+| `t3.small` | 2 | 2GB | \~$0.02 | ~$14.40 | Family use, 3-5 devices |
+| `t3.medium` | 2 | 4GB | \~$0.04 | ~$28.80 | Heavy usage, 6-10 devices |
 
-**Default Configuration:** `t3.micro` is perfect for most personal VPN needs. Costs are estimates based on ~730 hours/month.
+**Default Configuration:** `t3.micro` is perfect for most personal VPN needs. Costs are estimates based on \~730 hours/month.
+
+**⚠️ IMPORTANT COST NOTE:** The costs listed above cover the **server rental only**. **AWS will charge extra for Data Transfer Out (Egress) or network traffic passing through the server.** This cost is typically around **$0.09 per GB** after the initial AWS Free Tier limit (usually 100GB/month). Heavy usage (e.g., streaming 4K video) can incur significant, unexpected charges.
+
+## ⚠️ Crucial Caveats
+
+* **Streaming Services:** Many major streaming providers (like Netflix, Hulu) block access from known **Datacenter IP addresses** (which all AWS EC2 instances use). This VPN may **not reliably work** for geo-spoofing to access region-locked video content.
+* **Lack of True Anonymity:** While this self-hosted VPN hides your traffic from your Internet Service Provider (ISP), your identity is known to AWS via your billing details. This solution provides security but not true anonymity, as AWS will comply with valid legal requests regarding the server's traffic logs.
+* **Legal Compliance (AWS ToS):** You are solely responsible for the traffic originating from your server. Using the VPN for illegal activities, distributing copyrighted material (high risk of DMCA notices), or any unauthorized port scanning or hacking activities against third-party systems is strictly prohibited by AWS's Terms of Service and may lead to account suspension.
 
 ## 🌍 Region Selection
 
