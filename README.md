@@ -2,16 +2,22 @@
 
 This repository contains **Infrastructure as Code (Terraform)** to spin up a personal, on-demand WireGuard VPN server on AWS. Deploy your own private VPN in minutes and pay only when you use it.
 
-## 🎯 Project Goal & Architecture
+## 🎯 Project Goal
 
 To create a **"dispose-on-demand"** VPN solution. We use Terraform to automate the creation and destruction of infrastructure, ensuring you only pay for resources while they are in use.
 
-**🔒 Security & Privacy**
+## ⚖️ Capabilities & Limitations
 
-  * **Your Own VPN:** Complete control over your VPN server - no third-party logging.
-  * **WireGuard Protocol:** Modern, fast, and secure VPN protocol.
-  * **Encrypted Traffic:** All your internet traffic is encrypted and routed through AWS.
-  * **No Data Retention:** Destroy the server when done - no logs, no traces.
+Before deploying, understand what this VPN is (and isn't) good for:
+
+| ✅ The Good (Capabilities) | ⚠️ The Bad (Limitations) |
+| :--- | :--- |
+| **Public Wi-Fi Security:** Encrypts all traffic. Perfect for airports, hotels, and coffee shops. | **Streaming Blocks:** Netflix, Hulu, and Disney+ usually **block** AWS IP addresses. This is **not** good for watching region-locked movies. |
+| **Total Privacy:** You own the server. No third-party VPN provider logging your data. | **Data Costs:** AWS charges for outgoing data (\~$0.09/GB). Heavy 4K streaming will get expensive quickly. |
+| **Dispose-on-Demand:** Spin it up for a trip, destroy it when home. No monthly subscriptions. | **Not "Anonymous":** While your ISP can't see your traffic, AWS has your billing details. Not for illegal activities. |
+| **WireGuard Speed:** Uses modern, lightweight protocols for fast connections. | **Technical Setup:** Requires basic terminal knowledge; not a "one-click" app store experience. |
+
+-----
 
 ## 🚧 Step 1: AWS Account Setup
 
@@ -20,16 +26,16 @@ To create a **"dispose-on-demand"** VPN solution. We use Terraform to automate t
 **⚠️ Important:** Do NOT use root user access keys.
 
 1.  Log into AWS Console and search for **IAM**.
-2.  Click **Users** -> **Create user**.
+2.  Click **Users** -\> **Create user**.
 3.  Set username: `terraform-deployer`.
 4.  Select **Attach policies directly**.
 5.  Search and check: **AdministratorAccess**.
-6.  Click **Next** -> **Create user**.
+6.  Click **Next** -\> **Create user**.
 
 ### 1.2 Create Access Keys
 
 1.  Click your new user (`terraform-deployer`).
-2.  Go to **Security credentials** -> **Access keys** -> **Create access key**.
+2.  Go to **Security credentials** -\> **Access keys** -\> **Create access key**.
 3.  Select **Command Line Interface (CLI)**.
 4.  Check the confirmation box and click **Next**.
 5.  Click **Create access key**.
@@ -60,15 +66,7 @@ All VPN traffic runs on lightweight instances - no GPU needed.
 | `t3.small` | 2 | 2GB | \~$0.02 | ~$14.40 | Family use, 3-5 devices |
 | `t3.medium` | 2 | 4GB | \~$0.04 | ~$28.80 | Heavy usage, 6-10 devices |
 
-**Default Configuration:** `t3.micro` is perfect for most personal VPN needs. Costs are estimates based on \~730 hours/month.
-
-**⚠️ IMPORTANT COST NOTE:** The costs listed above cover the **server rental only**. **AWS will charge extra for Data Transfer Out (Egress) or network traffic passing through the server.** This cost is typically around **$0.09 per GB** after the initial AWS Free Tier limit (usually 100GB/month). Heavy usage (e.g., streaming 4K video) can incur significant, unexpected charges.
-
-## ⚠️ Crucial Caveats
-
-* **Streaming Services:** Many major streaming providers (like Netflix, Hulu) block access from known **Datacenter IP addresses** (which all AWS EC2 instances use). This VPN may **not reliably work** for geo-spoofing to access region-locked video content.
-* **Lack of True Anonymity:** While this self-hosted VPN hides your traffic from your Internet Service Provider (ISP), your identity is known to AWS via your billing details. This solution provides security but not true anonymity, as AWS will comply with valid legal requests regarding the server's traffic logs.
-* **Legal Compliance (AWS ToS):** You are solely responsible for the traffic originating from your server. Using the VPN for illegal activities, distributing copyrighted material (high risk of DMCA notices), or any unauthorized port scanning or hacking activities against third-party systems is strictly prohibited by AWS's Terms of Service and may lead to account suspension.
+**Default Configuration:** `t3.micro` is perfect for most personal VPN needs.
 
 ## 🌍 Region Selection
 
@@ -89,13 +87,13 @@ wg --version
 
 ## 🚀 Usage
 
-### 1. Initialize
+### 1\. Initialize
 
 ```bash
 terraform init
 ```
 
-### 2. Deploy Your VPN Server
+### 2\. Deploy Your VPN Server
 
 Select your preferences and deploy:
 
@@ -114,7 +112,7 @@ Type `yes` when prompted.
 
 After deployment, Terraform will generate configuration files for all your devices in the `./vpn-configs/` directory.
 
-### 3. Connect to VPN (Desktop/Laptop - Linux Only)
+### 3\. Connect to VPN (Desktop/Laptop - Linux Only)
 
 The VPN server is configured to support **up to 10 devices simultaneously**. Each device gets its own unique configuration file for security.
 
@@ -128,30 +126,32 @@ sudo ./connect-vpn.sh
 ```
 
 **What the script does:**
-- Automatically loads the correct WireGuard configuration
-- Establishes the VPN tunnel
-- Shows connection status
-- Disconnects cleanly when you press Ctrl+C
 
-### 4. Connect Mobile Devices (Android)
+  - Automatically loads the correct WireGuard configuration
+  - Establishes the VPN tunnel
+  - Shows connection status
+  - Disconnects cleanly when you press Ctrl+C
+
+### 4\. Connect Mobile Devices (Android)
 
 Transfer the configuration file to your Android device:
 
-1. Install WireGuard from the Play Store
-2. Transfer `vpn-configs/client2.conf` to your phone (via email, cloud, USB)
-3. In the WireGuard app: **+** -> **Import from file or archive**
-4. Select the config file
-5. Toggle the VPN on
+1.  Install WireGuard from the Play Store
+2.  Transfer `vpn-configs/client2.conf` to your phone (via email, cloud, USB)
+3.  In the WireGuard app: **+** -\> **Import from file or archive**
+4.  Select the config file
+5.  Toggle the VPN on
 
-**Security Note:** Do NOT share config files between devices. Each device should use its own unique configuration (client1, client2, client3, etc.).
+**Security Note:** Do NOT share config files between devices. Each device should use its own unique configuration.
 
 **Available configs after deployment:**
-- `vpn-configs/client1.conf` - Desktop/laptop primary
-- `vpn-configs/client2.conf` - Phone
-- `vpn-configs/client3.conf` - Tablet
-- `vpn-configs/client4.conf` through `client10.conf` - Additional devices
 
-### 5. Tear Down (Stop Billing)
+  - `vpn-configs/client1.conf` - Desktop/laptop primary
+  - `vpn-configs/client2.conf` - Phone
+  - `vpn-configs/client3.conf` - Tablet
+  - `vpn-configs/client4.conf` through `client10.conf` - Additional devices
+
+### 5\. Tear Down (Stop Billing)
 
 **Crucial:** When finished, destroy resources to stop costs. This deletes the server and all configurations.
 
@@ -167,20 +167,10 @@ terraform destroy -var="aws_region=eu-west-2" -var="instance_type=t3.small"
 
 Type `yes` to confirm.
 
-**⚠️ Warning:** 
-- This deletes all server data and configurations
-- Your local config files in `vpn-configs/` remain, but will NOT work with a new deployment
-- If you redeploy, new config files will be generated - you'll need to reconfigure all devices
+-----
 
-## 🌐 Use Cases
+### 🔒 Security Best Practices
 
-  * **Public Wi-Fi protection:** Secure your connection at coffee shops, airports
-  * **Privacy:** Hide your browsing from ISP
-  * **Geo-spoofing:** Access region-locked content by choosing different AWS regions
-  * **Family sharing:** Each family member gets their own config (up to 10 devices)
-
-## 🔒 Security Best Practices
-
-- **Never share config files** - Each device should have its own
-- **Keep `vpn-configs/` directory private** - Treat like SSH keys
-- **Use `terraform destroy`** when not needed - Don't leave VPN running unnecessarily
+  - **Never share config files** - Each device should have its own
+  - **Keep `vpn-configs/` directory private** - Treat like SSH keys
+  - **Use `terraform destroy`** when not needed - Don't leave VPN running unnecessarily
