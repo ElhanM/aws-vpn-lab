@@ -179,4 +179,4 @@ Type `yes` to confirm.
 
 * **Never share config files** - Each device should have its own
 * **Keep `vpn-configs/` directory private** - Treat like SSH keys
-* **Use `terraform destroy**` when not needed - Don't leave VPN running unnecessarily
+* **Use `terraform destroy`** when not needed - Don't leave VPN running unnecessarily
