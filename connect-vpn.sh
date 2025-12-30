@@ -55,7 +55,7 @@ if wg show "$INTERFACE_NAME" &>/dev/null; then
 fi
 
 echo -e "${BLUE}╔════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║            AWS VPN Lab - Connecting to VPN                 ║${NC}"
+echo -e "${BLUE}║            AWS VPN Lab - Connecting to VPN 🔐              ║${NC}"
 echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
 echo -e "${CYAN}Using configuration: $CONFIG_FILE${NC}"
 echo -e "${CYAN}Interface name: $INTERFACE_NAME${NC}"
