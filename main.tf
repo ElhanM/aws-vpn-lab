@@ -128,7 +128,7 @@ resource "aws_instance" "vpn_instance" {
   ami           = data.aws_ami.ubuntu_ami.id
   instance_type = var.instance_type
   key_name      = aws_key_pair.generated_key.key_name
-  
+
   vpc_security_group_ids = [aws_security_group.vpn_sg.id]
   subnet_id              = length(data.aws_subnets.default.ids) > 0 ? data.aws_subnets.default.ids[0] : aws_subnet.default_subnet[0].id
 
@@ -258,6 +258,6 @@ resource "local_file" "vpn_configs_readme" {
   EOT
 
   file_permission = "0644"
-  
+
   depends_on = [null_resource.generate_wg_keys]
 }
