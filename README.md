@@ -43,7 +43,7 @@ Before deploying, understand what this VPN is (and isn't) good for:
 
 ### 1.3 Configure Credentials & Settings
 
-Create a `terraform.tfvars` file in the project root. This file holds **all your configuration** — credentials and deployment settings — so you never need to pass `-var` flags on the command line.
+Create a `terraform.tfvars` file in the project root. This file holds **all your configuration** - credentials and deployment settings - so you never need to pass `-var` flags on the command line.
 
 ```bash
 cat > terraform.tfvars << 'EOF'
@@ -104,7 +104,7 @@ terraform init
 
 ### 2. Deploy Your VPN Server
 
-All settings are read from `terraform.tfvars` — no extra flags needed:
+All settings are read from `terraform.tfvars` - no extra flags needed:
 
 ```bash
 terraform apply -auto-approve
