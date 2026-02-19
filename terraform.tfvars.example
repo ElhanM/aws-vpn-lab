@@ -1,0 +1,9 @@
+# --- Required: AWS Credentials ---
+aws_access_key_id     = "AKIA..."
+aws_secret_access_key = "your-secret..."
+
+# --- Optional: Deployment Settings ---
+aws_region    = "us-east-1"
+instance_type = "t3.micro"
+vpn_port      = 51820
+max_clients   = 10
