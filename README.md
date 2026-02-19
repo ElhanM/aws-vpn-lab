@@ -41,19 +41,27 @@ Before deploying, understand what this VPN is (and isn't) good for:
 5. Click **Create access key**.
 6. **Download the CSV** or copy the **Access Key ID** and **Secret Access Key**.
 
-### 1.3 Configure Credentials
+### 1.3 Configure Credentials & Settings
 
-Create a file named `terraform.tfvars` in the project root.
+Create a `terraform.tfvars` file in the project root. This file holds **all your configuration** — credentials and deployment settings — so you never need to pass `-var` flags on the command line.
 
 ```bash
 cat > terraform.tfvars << 'EOF'
-aws_access_key_id      = "AKIA..."  # Replace with your Access Key ID
-aws_secret_access_key = "your-secret-access-key-here"
-EOF
+# --- Required: AWS Credentials ---
+aws_access_key_id     = "AKIA..."         # Your IAM user's Access Key ID
+aws_secret_access_key = "your-secret..."  # Your IAM user's Secret Access Key
 
+# --- Optional: Deployment Settings ---
+aws_region    = "us-east-1"  # AWS region (default: us-east-1)
+instance_type = "t3.micro"   # EC2 size: t3.micro / t3.small / t3.medium
+vpn_port      = 51820        # WireGuard UDP port (default: 51820)
+max_clients   = 10           # Number of client configs to generate (1-50)
+EOF
 ```
 
-*Note: `terraform.tfvars` is ignored by Git to prevent accidental commits.*
+*Note: `terraform.tfvars` is gitignored to prevent accidental credential commits.*
+
+---
 
 ## Server Selection
 
@@ -84,7 +92,6 @@ sudo apt install wireguard wireguard-tools
 
 # Verify installation
 wg --version
-
 ```
 
 ## Usage
@@ -93,32 +100,21 @@ wg --version
 
 ```bash
 terraform init
-
 ```
 
 ### 2. Deploy Your VPN Server
 
-Select your preferences and deploy:
+All settings are read from `terraform.tfvars` — no extra flags needed:
 
 ```bash
-# Default (t3.micro in us-east-1)
-terraform apply
-
-# Custom region
-terraform apply -var="aws_region=eu-west-2"
-
-# Larger instance for family use
-terraform apply -var="instance_type=t3.small"
-
+terraform apply -auto-approve
 ```
-
-Type `yes` when prompted.
 
 After deployment, Terraform will generate configuration files for all your devices in the `./vpn-configs/` directory.
 
 ### 3. Connect to VPN (Desktop/Laptop - Linux Only)
 
-The VPN server is configured to support **up to 10 devices simultaneously**. Each device gets its own unique configuration file for security.
+The VPN server is configured to support **up to 10 devices simultaneously** (or whatever `max_clients` is set to in your `terraform.tfvars`). Each device gets its own unique configuration file for security.
 
 Use the provided connection script for quick, terminal-based access:
 
@@ -127,7 +123,6 @@ Use the provided connection script for quick, terminal-based access:
 sudo ./connect-vpn.sh
 
 # Press Ctrl+C to disconnect
-
 ```
 
 **What the script does:**
@@ -158,20 +153,11 @@ Transfer the configuration file to your Android device:
 
 ### 5. Tear Down (Stop Billing)
 
-**Crucial:** When finished, destroy resources to stop costs. This deletes the server and all configurations.
-
-**Important:** Use the same parameters you used with `terraform apply`:
+**Crucial:** When finished, destroy resources to stop costs. Settings are read from `terraform.tfvars` automatically:
 
 ```bash
-# If you deployed with default settings
-terraform destroy
-
-# If you deployed with custom region or instance type
-terraform destroy -var="aws_region=eu-west-2" -var="instance_type=t3.small"
-
+terraform destroy -auto-approve
 ```
-
-Type `yes` to confirm.
 
 ---
 
@@ -179,4 +165,3 @@ Type `yes` to confirm.
 
 * **Never share config files** - Each device should have its own
 * **Keep `vpn-configs/` directory private** - Treat like SSH keys
-* **Use `terraform destroy`** when not needed - Don't leave VPN running unnecessarily
