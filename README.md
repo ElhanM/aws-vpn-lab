@@ -41,19 +41,15 @@ Before deploying, understand what this VPN is (and isn't) good for:
 5. Click **Create access key**.
 6. **Download the CSV** or copy the **Access Key ID** and **Secret Access Key**.
 
-### Configure Credentials & Settings
+### Configure Credentials
 
-A `terraform.tfvars.example` file is included in the project root.
-
-Copy it to create your local configuration file:
+Copy the example template and fill in your values:
 
 ```bash
 cp terraform.tfvars.example terraform.tfvars
-````
+```
 
-Then edit `terraform.tfvars` and fill in your AWS credentials and any deployment settings you want to customize.
-
----
+Then open `terraform.tfvars` and replace the placeholder values with your credentials and desired settings.
 
 ## Server Selection
 
